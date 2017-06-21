@@ -67,7 +67,9 @@ class SunObj extends Component {
         <h3>Sunrise: {results.sunrise}</h3>
         <h3>Sunset: {results.sunset}</h3>
         <h3>Day Length: {results.day_length}</h3>
-        <a href={"https://www.google.com/maps/place/"+place.latlng}>Link to this location!</a>
+        <a className="maps-logo" href={"https://www.google.com/maps/place/"+place.location}>
+            <img src={require('./googleMapsLogo.png')} />
+        </a>
       </div>
     )
   }
