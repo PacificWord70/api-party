@@ -73,7 +73,9 @@ class SunObj extends Component {
 
       this.state.offSet = true
       this.disclaimer = '(Time is in local time but does not account for day light savings)'
-  }
+      
+        this.componentDidUpdate
+}
 
   render() {
 
