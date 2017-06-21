@@ -21,7 +21,6 @@ class Sun extends Component {
   render() {
     return (
       <div className="sun">
-        <p>(Time is in UTC and does not account for day light savings)</p>
         <form onSubmit={this.handleSubmit}>
           <div>
             <input 

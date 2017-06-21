@@ -2,19 +2,20 @@ import React, { Component } from 'react'
 
 class SunObj extends Component {
   state = {
-
+      disclaimer: '(Time is in UTC and does not account for day light savings)',
+      offSet: false,
       location: '',
       latlng: '',
       lat: '',
       lng: '',
       ssInfo: '',
       llInfo: '',
+      tInfo: '',
   }
 
   constructor(props) {
     super(props)
 
-    console.log('constructor')
     let l = props.match.params.location
     this.state.location = l
     this.fetchUserData(l)
@@ -32,11 +33,46 @@ class SunObj extends Component {
         .then(ssInfo => this.setState({ ssInfo }))
   }
 
+  fetchTimeData = (la,lo) => {
+    fetch(`https://api.worldweatheronline.com/premium/v1/tz.ashx?key=c4311e21bbb04fbb8dc100839172106&q=${la},${lo}&format=json`)
+        .then(response => response.json())
+        .then(tInfo => this.setState({ tInfo }))
+  }
+
   componentWillReceiveProps(nextProps) {
     const locationChanged = nextProps.location !== this.props.location
     if (locationChanged) {
       this.fetchUserData(nextProps)
     }
+  }
+
+  didOffSet = () => {
+    const offSet = parseInt(this.state.tInfo.data.time_zone[0].utcOffset)
+
+      let newRiseH, newRiseM, newSetH, newSetM = ''
+
+      const r = this.state.ssInfo.results
+
+
+      newRiseH=r.sunrise.substring(0,r.sunrise.indexOf(':'))
+      newRiseM=r.sunrise.substring(r.sunrise.indexOf(':')+1,r.sunrise.indexOf(':')+3)
+      newSetH=r.sunset.substring(0,r.sunset.indexOf(':'))
+      newSetM=r.sunset.substring(r.sunset.indexOf(':')+1,r.sunset.indexOf(':')+3)
+      
+
+      newRiseH=parseInt(newRiseH)
+      newRiseM=parseInt(newRiseM)
+      newSetH=parseInt(newSetH)
+      newSetM=parseInt(newSetM)
+
+      newRiseH+=offSet
+      newSetH+=offSet
+
+      r.sunrise = newRiseH+':'+newRiseM+' AM'
+      r.sunset = newSetH+':'+newSetM+' PM'
+
+      this.state.offSet = true
+      this.disclaimer = '(Time is in local time but does not account for day light savings)'
   }
 
   render() {
@@ -58,48 +94,18 @@ class SunObj extends Component {
       let results = ''
       if(this.state.ssInfo !== ''){
         results = this.state.ssInfo.results
-
-      let newRiseH = ''
-      let newRiseM = ''
-      let newSetH = ''
-      let newSetM = ''
-
-      var today = new Date()
-      console.log('date')
-       let h = parseInt(parseInt(place.lng)/14)
-      console.log('/14')
-       h=parseInt(h)
-      console.log('parse')
-       while(h>12)
-       {
-           h-12
-           console.log('h>12')
-        }
-       while(h<0)
-       {
-           h+12
-           console.log('h<12')
-        }
-       //console.log(h)
-       let m = parseInt(h%60)
       
-      newRiseH=results.sunrise.substring(0,results.sunrise.indexOf(':'))
-      newRiseM=results.sunrise.substring(results.sunrise.indexOf(':')+1,results.sunrise.indexOf(':')+3)
-      newSetH=results.sunset.substring(0,results.sunset.indexOf(':'))
-      newSetM=results.sunset.substring(results.sunset.indexOf(':')+1,results.sunset.indexOf(':')+3)
-      
-      newRiseH=parseInt(newRiseH)-h+1
-      newRiseM=parseInt(newRiseM)-m
-      newSetH=parseInt(newSetH)-h+1
-      newSetM=parseInt(newSetM)-m
-
-      results.sunrise = newRiseH+':'+newRiseM+' AM'
-      results.sunset = newSetH+':'+newSetM+' PM'
+      this.fetchTimeData(place.lat,place.lng)
+      if(this.state.tInfo !== '' && !this.state.offSet){
+        this.didOffSet()
+      }
+    
       }
 
 
     return (
       <div className="sun-obj">
+        <p>{this.state.disclaimer}</p>
         <h3>Location: {place.location}</h3>
         <h3>Latitude: {place.lat}</h3>
         <h3>Longitude: {place.lng}</h3>
