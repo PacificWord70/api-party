@@ -70,6 +70,7 @@ class SunObj extends Component {
         <a className="maps-logo" href={"https://www.google.com/maps/place/"+place.location}>
             <img src={require('./googleMapsLogo.png')} />
         </a>
+        <p>(Click ^above^ to see in maps)</p>
       </div>
     )
   }
