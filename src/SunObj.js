@@ -49,6 +49,7 @@ class SunObj extends Component {
   didOffSet = () => {
     const offSet = parseInt(this.state.tInfo.data.time_zone[0].utcOffset)
 
+        //console.log('before change'+this.state.ssInfo.results.sunrise)
       let newRiseH, newRiseM, newSetH, newSetM = ''
 
       const r = this.state.ssInfo.results
@@ -74,6 +75,7 @@ class SunObj extends Component {
       this.state.offSet = true
       this.disclaimer = '(Time is in local time but does not account for day light savings)'
       
+        //console.log('after change (in method)'+this.state.ssInfo.results.sunrise)
         this.componentDidUpdate
 }
 
@@ -100,6 +102,7 @@ class SunObj extends Component {
       this.fetchTimeData(place.lat,place.lng)
       if(this.state.tInfo !== '' && !this.state.offSet){
         this.didOffSet()
+        //console.log('changed (done with method)'+this.state.ssInfo.results.sunrise)
       }
     
       }
@@ -111,8 +114,8 @@ class SunObj extends Component {
         <h3>Location: {place.location}</h3>
         <h3>Latitude: {place.lat}</h3>
         <h3>Longitude: {place.lng}</h3>
-        <h3>Sunrise (local time): {results.sunrise}</h3>
-        <h3>Sunset (local time): {results.sunset}</h3>
+        <h3>Sunrise: {results.sunrise}</h3>
+        <h3>Sunset: {results.sunset}</h3>
         <h3>Day Length: {results.day_length}</h3>
         <a className="maps-logo" href={"https://www.google.com/maps/place/"+place.location}>
             <img src={require('./googleMapsLogo.png')} />
