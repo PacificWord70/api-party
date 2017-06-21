@@ -5,23 +5,17 @@ import SunObj from './SunObj'
 
 class Sun extends Component {
   state = {
-    lat: '',
-    lng: '',
+    location: '',
   }
 
-  handleChangeLat = (ev) => {
-    const lat = ev.currentTarget.value
-    this.setState({ lat })
-  }
-
-  handleChangeLng = (ev) => {
-    const lng = ev.currentTarget.value
-    this.setState({ lng })
+  handleChange = (ev) => {
+    const location = ev.currentTarget.value
+    this.setState({ location })
   }
 
   handleSubmit = (ev) => {
     ev.preventDefault()
-    this.props.history.push(`/sun/${this.state.lat}-${this.state.lng}`)
+    this.props.history.push(`/sun/${this.state.location}`)
   }
 
   render() {
@@ -32,15 +26,9 @@ class Sun extends Component {
           <div>
             <input 
               type="text"
-              placeholder="Input the latitude"
-              value={this.state.lat}
-              onChange={this.handleChangeLat}
-            />
-            <input 
-              type="text"
-              placeholder="Input the longitude"
-              value={this.state.lng}
-              onChange={this.handleChangeLng}
+              placeholder="Input the location"
+              value={this.state.location}
+              onChange={this.handleChange}
             />
           </div>
           <div>
@@ -49,7 +37,7 @@ class Sun extends Component {
         </form>
 
         <Route exact path='/sun' render={() => <h3>Please enter a location to search</h3>} />
-        <Route path='/sun/:latlng' component={SunObj} />
+        <Route path='/sun/:location' component={SunObj} />
       </div>
     )
   }

@@ -6,24 +6,26 @@ class SunObj extends Component {
       lat: '',
       lng: '',
       ssInfo: '',
+      llInfo: '',
   }
 
-  constructor(latlng) {
-    super(latlng)
+  constructor(props) {
+    super(props)
 
-    const ll = latlng.match.params.latlng
-    const la = ll.substring(0,ll.indexOf('-'))
-    const lo = ll.substring(ll.indexOf('-')+1,ll.length)
-    this.state.lat = la
-    this.state.lng = lo
-    this.state.latlng = la+' '+lo
-    this.fetchUserData(la,lo)
+    let l = props.match.params.location
+    this.fetchUserData(l)
   }
 
-  fetchUserData = (la,lo) => {
-    fetch(`https://api.sunrise-sunset.org/json?lat=${la}&lng=${lo}&date=today`)
+  fetchUserData = (location) => {
+    fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location}&key=AIzaSyDVO8AZURL9K42Kxl1p-CfkP6uNRe--vEQ`)
       .then(response => response.json())
-      .then(ssInfo => this.setState({ ssInfo }))
+      .then(llInfo => this.setState({ llInfo }))
+  }
+
+  fetchSunData = (la,lo) => {
+        fetch(`https://api.sunrise-sunset.org/json?lat=${la}&lng=${lo}&date=today`)
+        .then(response => response.json())
+        .then(ssInfo => this.setState({ ssInfo }))
   }
 
   componentWillReceiveProps(nextProps) {
@@ -34,7 +36,20 @@ class SunObj extends Component {
   }
 
   render() {
+
       const place = this.state
+      let geometry = {
+          lat: place.lat,
+          lng: place.lng,
+      }
+
+      if(this.state.llInfo !== '' || place.lat !== geometry.lat){
+        geometry = this.state.llInfo.results[0].geometry.location
+        place.lat=geometry.lat
+        place.lng=geometry.lng
+        this.fetchSunData(place.lat, place.lng)
+      }
+
       let results = ''
       if(this.state.ssInfo !== ''){
         results = this.state.ssInfo.results
