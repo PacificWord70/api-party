@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 class SunObj extends Component {
   state = {
+
       location: '',
       latlng: '',
       lat: '',
@@ -53,19 +54,57 @@ class SunObj extends Component {
         place.latlng = place.lat+' '+place.lng
         this.fetchSunData(place.lat, place.lng)
       }
-
+//13
       let results = ''
       if(this.state.ssInfo !== ''){
         results = this.state.ssInfo.results
-      }
+
+      let newRiseH = ''
+      let newRiseM = ''
+      let newSetH = ''
+      let newSetM = ''
+
+      var today = new Date()
+      console.log('date')
+       let h = parseInt(parseInt(place.lng)/14)
+      console.log('/14')
+       h=parseInt(h)
+      console.log('parse')
+       while(h>12)
+       {
+           h-12
+           console.log('h>12')
+        }
+       while(h<0)
+       {
+           h+12
+           console.log('h<12')
+        }
+       //console.log(h)
+       let m = parseInt(h%60)
       
+      newRiseH=results.sunrise.substring(0,results.sunrise.indexOf(':'))
+      newRiseM=results.sunrise.substring(results.sunrise.indexOf(':')+1,results.sunrise.indexOf(':')+3)
+      newSetH=results.sunset.substring(0,results.sunset.indexOf(':'))
+      newSetM=results.sunset.substring(results.sunset.indexOf(':')+1,results.sunset.indexOf(':')+3)
+      
+      newRiseH=parseInt(newRiseH)-h+1
+      newRiseM=parseInt(newRiseM)-m
+      newSetH=parseInt(newSetH)-h+1
+      newSetM=parseInt(newSetM)-m
+
+      results.sunrise = newRiseH+':'+newRiseM+' AM'
+      results.sunset = newSetH+':'+newSetM+' PM'
+      }
+
+
     return (
       <div className="sun-obj">
         <h3>Location: {place.location}</h3>
         <h3>Latitude: {place.lat}</h3>
         <h3>Longitude: {place.lng}</h3>
-        <h3>Sunrise: {results.sunrise}</h3>
-        <h3>Sunset: {results.sunset}</h3>
+        <h3>Sunrise (local time): {results.sunrise}</h3>
+        <h3>Sunset (local time): {results.sunset}</h3>
         <h3>Day Length: {results.day_length}</h3>
         <a className="maps-logo" href={"https://www.google.com/maps/place/"+place.location}>
             <img src={require('./googleMapsLogo.png')} />
