@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 class SunObj extends Component {
   state = {
+      location: '',
       latlng: '',
       lat: '',
       lng: '',
@@ -12,7 +13,9 @@ class SunObj extends Component {
   constructor(props) {
     super(props)
 
+    console.log('constructor')
     let l = props.match.params.location
+    this.state.location = l
     this.fetchUserData(l)
   }
 
@@ -47,6 +50,7 @@ class SunObj extends Component {
         geometry = this.state.llInfo.results[0].geometry.location
         place.lat=geometry.lat
         place.lng=geometry.lng
+        place.latlng = place.lat+' '+place.lng
         this.fetchSunData(place.lat, place.lng)
       }
 
@@ -57,6 +61,7 @@ class SunObj extends Component {
       
     return (
       <div className="sun-obj">
+        <h3>Location: {place.location}</h3>
         <h3>Latitude: {place.lat}</h3>
         <h3>Longitude: {place.lng}</h3>
         <h3>Sunrise: {results.sunrise}</h3>

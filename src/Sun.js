@@ -14,7 +14,7 @@ class Sun extends Component {
   }
 
   handleSubmit = (ev) => {
-    ev.preventDefault()
+    console.log('submit clicked')
     this.props.history.push(`/sun/${this.state.location}`)
   }
 
